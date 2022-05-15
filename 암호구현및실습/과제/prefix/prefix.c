@@ -4,26 +4,32 @@
 #include <string.h>
 #define MAX_STACK_SIZE 200
 
-typedef struct {
+typedef struct
+{
     int stack[MAX_STACK_SIZE];
     int top;
-}StackType;
+} StackType;
 
-void init(StackType *s){
-    memset(s->stack, 0, sizeof(int)*MAX_STACK_SIZE);
+void init(StackType *s)
+{
+    memset(s->stack, 0, sizeof(int) * MAX_STACK_SIZE);
     s->top = -1;
 }
 
-int is_empty(StackType *s){
-    return (s->top ==-1);
+int is_empty(StackType *s)
+{
+    return (s->top == -1);
 }
 
-int is_full(StackType *s){
-    return (s->top == (MAX_STACK_SIZE-1));
+int is_full(StackType *s)
+{
+    return (s->top == (MAX_STACK_SIZE - 1));
 }
 
-void push(StackType *s, char item){
-    if (is_full(s)){
+void push(StackType *s, char item)
+{
+    if (is_full(s))
+    {
         fprintf(stderr, "스택 포화 에러\n");
         return;
     }
@@ -31,8 +37,10 @@ void push(StackType *s, char item){
         s->stack[++(s->top)] = item;
 }
 
-char pop(StackType *s){
-    if (is_empty(s)){
+char pop(StackType *s)
+{
+    if (is_empty(s))
+    {
         fprintf(stderr, "스택 공백 에러\n");
         exit(1);
     }
@@ -40,56 +48,40 @@ char pop(StackType *s){
         return s->stack[(s->top)--];
 }
 
-int is_operator(char op){
-    return op=='+'||op=='-'||op=='*'||op=='/';
+int is_operator(char op)
+{
+    return op == '+' || op == '-' || op == '*' || op == '/';
 }
 
-int calculate(char op, int a , int b){
+int calculate(char op, int a, int b)
+{
     if (op == '+')
         return a + b;
     else if (op == '-')
-        return a-b;
+        return a - b;
     else if (op == '*')
-        return a*b;
+        return a * b;
     else
-        return a/b;   
+        return a / b;
 }
 
-void prefix(FILE *stream, StackType *s, char token){
+void prefix(FILE *stream, StackType *s, char token)
+{
     push(s, token);
-    printf("stack top is: %c\n", s->stack[s->top]);
-    printf("stack second top is : %c\n", s->stack[(s->top)-1]);
-    if (!is_operator(s->stack[s->top])){
-        if (!is_operator(s->stack[(s->top)-1])){
-            if(is_operator(s->stack[(s->top)-2])){
-                printf("calculate\n");
-                int b = pop(s);
-                int a = pop(s);
-                int op = pop(s);
-
-                printf("%c\n", b);
-                printf("%c\n", a);
-                for (int i=0;i<15;i++)
-                    printf("[%d]%c ", i, s->stack[i]);
-                int value = calculate(op, a-'0', b-'0');
-                printf("\ncal : %d\n", value);
-                push(s, value + '0');
-            }
-
-        }
-
+    while (!is_operator(s->stack[s->top]) && !is_operator(s->stack[(s->top) - 1]) && is_operator(s->stack[(s->top) - 2]))
+    {
+        int b = pop(s);
+        int a = pop(s);
+        int op = pop(s);
+        int value = calculate(op, a - '0', b - '0');
+        push(s, value + '0');
     }
-
-    for (int i=0;i<15;i++)
-        printf("[%d]%c ", i, s->stack[i]);
-    printf("\ntop is : %c", s->stack[s->top]);   
-    
 }
 
-int main ()
-{   
+int main()
+{
     StackType *s;
-    int n=0;
+    int n = 0;
     char token;
 
     FILE *fp = fopen("prefix.in", "r");
@@ -99,15 +91,13 @@ int main ()
     fprintf(fout, "%d\n", n);
     fgetc(fp);
 
-    for(int i=0;i<n;i++){
-        printf("loop: %d\n", i);
+    for (int i = 0; i < n; i++)
+    {
         init(s);
-        while(fscanf(fp, "%c", &token)!= EOF)
+        while (fscanf(fp, "%c", &token) != EOF)
         {
-            printf("\n\ntoken is: %c\n", token);
             prefix(fp, s, token);
-            
-            if(fgetc(fp)=='\n')
+            if (fgetc(fp) == '\n')
                 break;
         }
         fprintf(fout, "%c\n", s->stack[s->top]);
