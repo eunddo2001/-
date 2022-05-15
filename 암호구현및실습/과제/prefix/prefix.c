@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define MAX_STACK_SIZE 200
 
 typedef struct {
@@ -9,7 +10,7 @@ typedef struct {
 }StackType;
 
 void init(StackType *s){
-    //s->stack = 0;
+    memset(s->stack, 0, sizeof(int)*MAX_STACK_SIZE);
     s->top = -1;
 }
 
@@ -21,7 +22,7 @@ int is_full(StackType *s){
     return (s->top == (MAX_STACK_SIZE-1));
 }
 
-void push(StackType *s, int item){
+void push(StackType *s, char item){
     if (is_full(s)){
         fprintf(stderr, "스택 포화 에러\n");
         return;
@@ -30,7 +31,7 @@ void push(StackType *s, int item){
         s->stack[++(s->top)] = item;
 }
 
-int pop(StackType *s){
+char pop(StackType *s){
     if (is_empty(s)){
         fprintf(stderr, "스택 공백 에러\n");
         exit(1);
@@ -55,18 +56,34 @@ int calculate(char op, int a , int b){
 }
 
 void prefix(FILE *stream, StackType *s, char token){
-    if (!is_operator(token)){
-        if (!is_operator(s->top)){
-            if(is_operator(s->stack[--(s->top)])){
-                pop(s);
-                pop(s);
-                int value = calculate(s->stack[--(s->top)], s->top, token);
-                push(s, value);
+    push(s, token);
+    printf("stack top is: %c\n", s->stack[s->top]);
+    printf("stack second top is : %c\n", s->stack[(s->top)-1]);
+    if (!is_operator(s->stack[s->top])){
+        if (!is_operator(s->stack[(s->top)-1])){
+            if(is_operator(s->stack[(s->top)-2])){
+                printf("calculate\n");
+                int b = pop(s);
+                int a = pop(s);
+                int op = pop(s);
+
+                printf("%c\n", b);
+                printf("%c\n", a);
+                for (int i=0;i<15;i++)
+                    printf("[%d]%c ", i, s->stack[i]);
+                int value = calculate(op, a-'0', b-'0');
+                printf("\ncal : %d\n", value);
+                push(s, value + '0');
             }
+
         }
+
     }
-    else
-        push(s, token);   
+
+    for (int i=0;i<15;i++)
+        printf("[%d]%c ", i, s->stack[i]);
+    printf("\ntop is : %c", s->stack[s->top]);   
+    
 }
 
 int main ()
@@ -83,14 +100,18 @@ int main ()
     fgetc(fp);
 
     for(int i=0;i<n;i++){
-        while(token = fgetc(fp)!='\n')
-        {   
+        printf("loop: %d\n", i);
+        init(s);
+        while(fscanf(fp, "%c", &token)!= EOF)
+        {
+            printf("\n\ntoken is: %c\n", token);
             prefix(fp, s, token);
-            printf("hi");
+            
+            if(fgetc(fp)=='\n')
+                break;
         }
-        fprintf(fout, "%d\n", s->top);
+        fprintf(fout, "%c\n", s->stack[s->top]);
     }
-    printf("hi");
 
     fclose(fp);
     fclose(fout);
