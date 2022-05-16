@@ -65,7 +65,7 @@ int calculate(char op, int a, int b)
         return a / b;
 }
 
-void prefix(FILE *stream, StackType *s, char token)
+void prefix(StackType *s, char token)
 {
     push(s, token);
     while (!is_operator(s->stack[s->top]) && !is_operator(s->stack[(s->top) - 1]) && is_operator(s->stack[(s->top) - 2]))
@@ -78,9 +78,9 @@ void prefix(FILE *stream, StackType *s, char token)
     }
 }
 
-int main()
+int main(void)
 {
-    StackType *s;
+    StackType *s = (StackType*)malloc(sizeof(StackType));
     int n = 0;
     char token;
 
@@ -96,7 +96,7 @@ int main()
         init(s);
         while (fscanf(fp, "%c", &token) != EOF)
         {
-            prefix(fp, s, token);
+            prefix(s, token);
             if (fgetc(fp) == '\n')
                 break;
         }
