@@ -19,7 +19,6 @@ void getMaxArr(int seq[]) {
     int lindex = n;
     int rindex = 0;
     int llindex = 0;
-    int arr[] = { 0 };
     for (int i = 0; i < n; i++) {
         temp += seq[i];
         if (temp > max) {
