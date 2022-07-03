@@ -13,7 +13,7 @@ MODULE proc(other-person,turn,myname)
 VAR
     state: {thinking,hungry,eating};
 ASSIGN
-    init(state) := -- Complete the case here
+    init(state) := thinking;
     next(state) :=
         case
             (state = hungry) &

@@ -1,0 +1,29 @@
+MODULE main
+    VAR
+        turn : boolean;
+        proc0 : process user(turn, FALSE);
+        proc1 : process user(turn, TRUE);
+    ASSIGN
+        init(turn) := FALSE;
+        next(turn) :=
+            case
+                (proc1.control = critical | proc0.control = critical) : turn;
+                TRUE : {TRUE, FALSE};
+            esac;
+    SPEC AG ! (proc0.control = critical & proc1.control = critical);
+    SPEC AG (proc1.control = ready -> AF proc1.control = critical);
+
+MODULE user(turn, myID)
+    VAR
+        control : {idle, ready, critical};
+    ASSIGN
+        init(control) := idle;
+        next(control) :=
+            case
+                control = idle : {idle, ready};
+                control = ready & turn = myID : critical;
+                control = critical : {critical, idle};
+                TRUE : control;
+            esac;
+    FAIRNESS running;
+    FAIRNESS !(control = critical);
