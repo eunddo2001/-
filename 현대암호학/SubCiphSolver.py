@@ -8,13 +8,13 @@ MUCDIHULCDKNLRNRKNMOBNOMUFDNYURBYRLLDNDTIRCGCTBHCDIHDIENTNYUTIUKGUWTMUDNBT
 IKUSOUINCPGCTBHBYRDINMRIKRBNDTIKRMUDMMUAUMKDGCUDINYRNTIBUNYUPRMUMUBTMLULNY
 ULRNRDIRIPEDAUIGCTBHBRIITNGURCNUMULMUNMTRBNDAUCPFDNYTONRCNUMDIERCCKOGKUSOU
 INGCTBHK'''
-#cipher = cipher.replace('\n','')
+cipher = cipher.replace('\n','')
 
 freq = {}
 for i in range(65,91):
     freq[chr(i)] = cipher.count(chr(i))
 sorted_freq = sorted(freq.items(), key=lambda x: x[1], reverse=True)
-#print(sorted_freq, end='\n\n')
+print(sorted_freq, end='\n\n')
 
 diagram={}
 for i in range(65,91):
@@ -22,7 +22,7 @@ for i in range(65,91):
         if cipher.count(chr(i)+chr(j))>2:
             diagram[chr(i)+chr(j)] = cipher.count(chr(i)+chr(j))
 sorted_diagram = sorted(diagram.items(), key=lambda x: x[1], reverse=True)
-#print(sorted_diagram, end='\n\n')
+print(sorted_diagram, end='\n\n')
 
 triagram={}
 for i in range(65,91):
@@ -31,7 +31,7 @@ for i in range(65,91):
             if cipher.count(chr(i)+chr(j)+chr(k))>2:
                 triagram[chr(i)+chr(j)+chr(k)] = cipher.count(chr(i)+chr(j)+chr(k))
 sorted_triagram = sorted(triagram.items(), key=lambda x: x[1], reverse=True)
-#print(sorted_triagram, end='\n\n')
+print(sorted_triagram, end='\n\n')
 
 quatragram={}
 for i in range(65,91):
@@ -41,7 +41,7 @@ for i in range(65,91):
                 if cipher.count(chr(i)+chr(j)+chr(k)+chr(l))>2:
                     quatragram[chr(i)+chr(j)+chr(k)+chr(l)] = cipher.count(chr(i)+chr(j)+chr(k)+chr(l))
 sorted_quatragram = sorted(quatragram.items(), key=lambda x: x[1], reverse=True)
-#print(sorted_quatragram, end = '\n\n')
+print(sorted_quatragram, end = '\n\n')
 
 plain = cipher
 plain = plain.replace('U', 'e')
